@@ -13,6 +13,7 @@ class WebViewExample extends StatefulWidget {
 class _WebViewExampleState extends State<WebViewExample> {
   final Completer<WebViewController> _controller =
       Completer<WebViewController>();
+  WebViewController _webViewController;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +33,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           initialUrl: 'https://tiendas.bazzaio.com/polanka',
           javascriptMode: JavascriptMode.unrestricted,
           onWebViewCreated: (WebViewController webViewController) {
+            _webViewController = webViewController;
             _controller.complete(webViewController);
           },
           // TODO(iskakaushik): Remove this when collection literals makes it to stable.
@@ -49,6 +51,12 @@ class _WebViewExampleState extends State<WebViewExample> {
           },
           onPageStarted: (String url) {
             print('Page started loading: $url');
+            if (_webViewController != null) {
+              String cookie =
+                  "%5B%7B%22uid%22%3A%22d3f8d9d65cb237d5b604d57a90b034a0%22%2C%22id_cliente%22%3A%22297%22%2C%22fullname%22%3A%22KUBO%20-%20Test%20Developer%22%2C%22email%22%3A%22dsolano%40kubo.co%22%2C%22foto%22%3A%22http%3A%2F%2Fapi.bazzaio.com%2Fimgs_usuarios%2Fdefecto.png%22%2C%22cedula%22%3A%2212312312%22%2C%22telefono%22%3A%2200000%22%7D%5D";
+              _webViewController.evaluateJavascript(
+                  'document.cookie = "userdata297=$cookie";');
+            }
           },
           onPageFinished: (String url) {
             print('Page finished loading: $url');
@@ -56,7 +64,7 @@ class _WebViewExampleState extends State<WebViewExample> {
           gestureNavigationEnabled: true,
         );
       }),
-      floatingActionButton: favoriteButton(),
+      //floatingActionButton: favoriteButton(),
     );
   }
 
